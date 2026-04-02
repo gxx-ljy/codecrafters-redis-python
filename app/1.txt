@@ -1,0 +1,20 @@
+git tag -a v0.0.1 -m 'Bind to a port'
+git push origin master v0.0.1
+git show v0.0.1
+---
+git tag -a v0.0.2 -m 'Respond to PING'
+git push origin master v0.0.2
+---
+Respond to multiple PINGS
+Handle concurrent clients
+Implement the ECHO Co...
+Implement the SET & GET...
+Expiry
+S
+Create a list
+Append an element
+Append multiple elements
+List elements (positive ind...
+List elements (negative in...
+Prepend elements
+Query list length
