@@ -7,10 +7,11 @@ def main():
 
     # Uncomment the code below to pass the first stage
     #
-    # server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
-    server_socket = socket.create_server(("localhost", 6379))
-    connection, _ = server_socket.accept()
-    connection.sendall(b"+PONG\r\n")
+    server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
+    # server_socket = socket.create_server(("localhost", 6379)) # windows
+    while True:
+        connection, t = server_socket.accept()
+        connection.sendall(b"+PONG\r\n")
 
 if __name__ == "__main__":
     main()
