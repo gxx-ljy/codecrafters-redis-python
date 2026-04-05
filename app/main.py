@@ -122,7 +122,7 @@ def handle_client(conn):
                 reply = encode_resp(command[1])
                 conn.sendall(reply)
             elif command[0] == b"SET":
-                key, value = command[1:]
+                key, value = command[1], command[2]
                 # 存储到数据库
                 db[key] = value
                 # 处理EX和PX
