@@ -1,6 +1,8 @@
 import socket  # noqa: F401
 import threading
 
+db = {}
+
 class RespParser:
     def __init__(self):
         self.buffer = b''
@@ -119,6 +121,18 @@ def handle_client(conn):
             elif command[0] == b"ECHO":
                 reply = encode_resp(command[1])
                 conn.sendall(reply)
+            elif command[0] == b"SET":
+                key, value = command[1:]
+                # 存储到数据库
+                db[key] = value
+                conn.sendall(b"+OK\r\n")
+            elif command[0] == b"GET":
+                key = command[1]
+                # 从数据库中获取值
+                value = db.get(key)
+                if value is not None:
+                    conn.sendall(encode_resp(value))
+
 
     conn.close()
 
