@@ -8,8 +8,9 @@ def test_redis_server():
         
         # 发送 PING 命令 (Redis 协议格式)
         client.send(b'*1\r\n$4\r\nPING\r\n')
+        # client.send(b'*2\r\n$4\r\nECHO\r\n$3\r\nhey\r\n')
         response = client.recv(1024)
-        print(f"Server response: {response.decode()}")
+        print(f"Server response: {response}")
         
         client.close()
     except Exception as e:
