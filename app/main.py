@@ -138,8 +138,7 @@ def handle_client(conn):
                 key = command[1]
                 # 从数据库中获取值
                 value = db.get(key)
-                if value is not None:
-                    conn.sendall(encode_resp(value))
+                conn.sendall(encode_resp(value))
 
 
     conn.close()
