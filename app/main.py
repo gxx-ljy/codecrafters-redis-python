@@ -140,10 +140,11 @@ def handle_client(conn):
                 value = db.get(key)
                 conn.sendall(encode_resp(value))
             elif command[0] == b"RPUSH":
-                key, value = command[1], command[2]
+                key, values = command[1], command[2:]
                 if key not in db:  # 创建一个空列表
                     db[key] = []
-                db[key].append(value)
+                for value in values:  # 添加多个值
+                    db[key].append(value)
                 conn.sendall(encode_resp(len(db[key])))
 
     conn.close()
