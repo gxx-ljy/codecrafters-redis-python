@@ -141,7 +141,7 @@ def handle_client(conn):
                 if value is not None:
                     conn.sendall(encode_resp(value))
                 else:
-                    conn.sendall(b"$-1\r\n")
+                    conn.sendall(encode_resp(None))
 
 
     conn.close()
