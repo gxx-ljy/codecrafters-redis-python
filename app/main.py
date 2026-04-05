@@ -148,6 +148,8 @@ def handle_client(conn):
                 conn.sendall(encode_resp(len(db[key])))
             elif command[0] == b"LRANGE":
                 key, start, end = command[1], int(command[2]), int(command[3])
+                if key not in db:
+                    conn.sendall(encode_resp([]))
                 conn.sendall(encode_resp(db[key][start:end+1]))
 
     conn.close()
