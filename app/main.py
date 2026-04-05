@@ -127,22 +127,18 @@ def handle_client(conn):
                 db[key] = value
                 # 处理EX和PX
                 if len(command) > 2:
-                    if command[2] == b"EX":
-                        expire_time = int(command[3])
+                    if command[3] == b"EX":
+                        expire_time = int(command[4])
                         threading.Timer(expire_time, db.pop, args=(key,)).start()
-                    elif command[2] == b"PX":
-                        expire_time = int(command[3]) / 1000
+                    elif command[3] == b"PX":
+                        expire_time = int(command[4]) / 1000
                         threading.Timer(expire_time, db.pop, args=(key,)).start()
                 conn.sendall(b"+OK\r\n")
             elif command[0] == b"GET":
                 key = command[1]
                 # 从数据库中获取值
                 value = db.get(key)
-                if value is not None:
-                    conn.sendall(encode_resp(value))
-                else:
-                    conn.sendall(encode_resp(None))
-
+                conn.sendall(encode_resp(value))
 
     conn.close()
 

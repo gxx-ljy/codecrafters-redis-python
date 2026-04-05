@@ -2,6 +2,8 @@ import socket
 
 def test_redis_server():
     try:
+        db = {}
+        print(db.get('key'))
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.connect(('localhost', 6379))
         print("Connected to server!")
