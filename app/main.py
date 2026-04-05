@@ -146,6 +146,9 @@ def handle_client(conn):
                 for value in values:  # 添加多个值
                     db[key].append(value)
                 conn.sendall(encode_resp(len(db[key])))
+            elif command[0] == b"LRANGE":
+                key, start, end = command[1], int(command[2]), int(command[3])
+                conn.sendall(encode_resp(db[key][start:end+1]))
 
     conn.close()
 
