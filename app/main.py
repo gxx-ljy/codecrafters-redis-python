@@ -163,6 +163,9 @@ def handle_client(conn):
                     if end < 0:  # 处理负数索引
                         end = len(db[key]) + end
                     conn.sendall(encode_resp(db[key][start:end+1]))
+            elif command[0] == b"LLEN":
+                key = command[1]
+                conn.sendall(encode_resp(len(db[key])))
 
     conn.close()
 
