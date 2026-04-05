@@ -126,7 +126,7 @@ def handle_client(conn):
                 # 存储到数据库
                 db[key] = value
                 # 处理EX和PX
-                if len(command) > 2:
+                if len(command) > 3:
                     if command[3] == b"EX":
                         expire_time = int(command[4])
                         threading.Timer(expire_time, db.pop, args=(key,)).start()
