@@ -169,6 +169,13 @@ def handle_client(conn):
                     conn.sendall(encode_resp(0))
                 else:
                     conn.sendall(encode_resp(len(db[key])))
+            elif command[0] == b"LPOP":
+                key = command[1]
+                value = db.pop(key)
+                if value is None:
+                    conn.sendall(encode_resp(None))
+                else:
+                    conn.sendall(encode_resp(value))
 
     conn.close()
 
