@@ -174,8 +174,14 @@ def handle_client(conn):
                 if value is None:
                     conn.sendall(encode_resp(None))
                 else:
-                    value = db[key].pop(0)
-                    conn.sendall(encode_resp(value))
+                    if len(command) > 2:
+                        num = int(command[2])
+                        value = db[key][:num]
+                        db[key] = db[key][num:]
+                        conn.sendall(encode_resp(value))
+                    else:
+                        value = db[key].pop(0)
+                        conn.sendall(encode_resp(value))
 
     conn.close()
 
