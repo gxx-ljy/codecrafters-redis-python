@@ -125,6 +125,14 @@ def handle_client(conn):
                 key, value = command[1:]
                 # 存储到数据库
                 db[key] = value
+                # 处理EX和PX
+                if len(command) > 2:
+                    if command[2] == b"EX":
+                        expire_time = int(command[3])
+                        threading.Timer(expire_time, db.pop, args=(key,)).start()
+                    elif command[2] == b"PX":
+                        expire_time = int(command[3]) / 1000
+                        threading.Timer(expire_time, db.pop, args=(key,)).start()
                 conn.sendall(b"+OK\r\n")
             elif command[0] == b"GET":
                 key = command[1]
