@@ -151,6 +151,10 @@ def handle_client(conn):
                 if key not in db:
                     conn.sendall(encode_resp([]))
                 else:
+                    if start < 0:  # 处理负数索引
+                        start = len(db[key]) + start
+                    if end < 0:  # 处理负数索引
+                        end = len(db[key]) + end
                     conn.sendall(encode_resp(db[key][start:end+1]))
 
     conn.close()
