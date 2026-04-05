@@ -112,8 +112,7 @@ def handle_client(conn):
         commands = parser.feed(data)
         for command in commands:
             if command[0] == b"PING":
-                reply = encode_resp(b"PONG")
-                conn.sendall(reply)
+                conn.sendall(b"+PONG\r\n")
             elif command == "QUIT":
                 conn.close()
                 return
