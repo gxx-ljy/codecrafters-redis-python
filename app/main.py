@@ -146,6 +146,13 @@ def handle_client(conn):
                 for value in values:  # 添加多个值
                     db[key].append(value)
                 conn.sendall(encode_resp(len(db[key])))
+            elif command[0] == b"LPUSH":
+                key, values = command[1], command[2:]
+                if key not in db:  # 创建一个空列表
+                    db[key] = []
+                for value in values:  # 添加多个值
+                    db[key].insert(0, value)
+                conn.sendall(encode_resp(len(db[key])))
             elif command[0] == b"LRANGE":
                 key, start, end = command[1], int(command[2]), int(command[3])
                 if key not in db:
