@@ -1,5 +1,6 @@
 import socket  # noqa: F401
 import threading
+import time
 
 db = {}
 
@@ -171,7 +172,7 @@ def handle_client(conn):
                     conn.sendall(encode_resp(len(db[key])))
             elif command[0] == b"LPOP":
                 key = command[1]
-                if value is None:
+                if key not in db or not db[key]:
                     conn.sendall(encode_resp(None))
                 else:
                     if len(command) > 2:
@@ -182,6 +183,58 @@ def handle_client(conn):
                     else:
                         value = db[key].pop(0)
                         conn.sendall(encode_resp(value))
+            elif command[0] == b"BLPOP":
+                keys = command[1:-1]  # 获取所有键（除了最后一个参数是超时时间）
+                timeout = int(command[-1])  # 超时时间
+                
+                # 循环检查每个键是否有元素
+                for key in keys:
+                    if key in db and db[key]:  # 如果键存在且列表不为空
+                        value = db[key].pop(0)  # 弹出第一个元素
+                        result = [key, value]
+                        conn.sendall(encode_resp(result))
+                        return
+                
+                # 如果没有立即可用的元素，设置超时等待
+                if timeout == 0:  # 无限期等待
+                    while True:
+                        # 检查是否有任何键现在有元素
+                        found = False
+                        for key in keys:
+                            if key in db and db[key]:
+                                value = db[key].pop(0)
+                                result = [key, value]
+                                conn.sendall(encode_resp(result))
+                                found = True
+                                break
+                        
+                        if found:
+                            break
+                            
+                        # 短暂休眠以避免过度占用CPU
+                        time.sleep(0.01)
+                else:  # 有限时间等待
+                    start_time = time.time()
+                    while time.time() - start_time < timeout:
+                        # 检查是否有任何键现在有元素
+                        found = False
+                        for key in keys:
+                            if key in db and db[key]:
+                                value = db[key].pop(0)
+                                result = [key, value]
+                                conn.sendall(encode_resp(result))
+                                found = True
+                                break
+                        
+                        if found:
+                            break
+                            
+                        # 短暂休眠以避免过度占用CPU
+                        time.sleep(0.01)
+                    
+                    # 如果超时仍未找到元素，返回nil
+                    if not found:
+                        conn.sendall(encode_resp(None))
 
     conn.close()
 
