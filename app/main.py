@@ -185,7 +185,7 @@ def handle_client(conn):
                         conn.sendall(encode_resp(value))
             elif command[0] == b"BLPOP":
                 keys = command[1:-1]  # 获取所有键（除了最后一个参数是超时时间）
-                timeout = int(command[-1])  # 超时时间
+                timeout = float(command[-1])  # 超时时间
                 
                 # 循环检查每个键是否有元素
                 for key in keys:
