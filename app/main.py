@@ -241,7 +241,7 @@ def handle_client(conn):
                     conn.sendall(b"+none\r\n")
                 else:
                     # These types include: string, list, set, zset, hash, stream, and vectorset.
-                    if isinstance(db[key], str):
+                    if isinstance(db[key], (str, bytes)):
                         conn.sendall(b"+string\r\n")
                     elif isinstance(db[key], list):
                         conn.sendall(b"+list\r\n")
