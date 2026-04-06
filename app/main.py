@@ -235,6 +235,26 @@ def handle_client(conn):
                     # 如果超时仍未找到元素，返回nil
                     if not found:
                         conn.sendall(b"*-1\r\n")
+            elif command[0] == b"TYPE":
+                key = command[1]
+                if key not in db:
+                    conn.sendall(b"+none\r\n")
+                else:
+                    # These types include: string, list, set, zset, hash, stream, and vectorset.
+                    if isinstance(db[key], str):
+                        conn.sendall(b"+string\r\n")
+                    elif isinstance(db[key], list):
+                        conn.sendall(b"+list\r\n")
+                    elif isinstance(db[key], set):
+                        conn.sendall(b"+set\r\n")
+                    # elif isinstance(db[key], list):
+                    #     conn.sendall(b"+zset\r\n")
+                    elif isinstance(db[key], dict):
+                        conn.sendall(b"+hash\r\n")
+                    # elif isinstance(db[key], list):
+                    #     conn.sendall(b"+vectorset\r\n")
+
+
 
     conn.close()
 
