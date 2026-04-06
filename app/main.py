@@ -234,7 +234,7 @@ def handle_client(conn):
                     
                     # 如果超时仍未找到元素，返回nil
                     if not found:
-                        conn.sendall(encode_resp(None))
+                        conn.sendall(b"*-1\r\n")
 
     conn.close()
 
